@@ -51,11 +51,18 @@ namespace RemotePadServerConsole
 
             //Process pr = new Process();
             //pr.StartInfo.FileName = "visual studiocmd";
-       
-            //pr.StartInfo.UseShellExecute = false;
+
+            //pr.StartInfo.UseShellExecute = false;7
             //pr.StartInfo.CreateNoWindow = false;
 
             //pr.Start();
+
+            Keyboard k = new Keyboard();
+
+
+            k.Send(Keyboard.ScanCodeShort.KEY_7);
+
+            
 
             Console.WriteLine("Hello World!");
 
@@ -67,6 +74,10 @@ namespace RemotePadServerConsole
 
         public class Win32
         {
+
+        
+
+
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
             public static extern IntPtr FindWindow(string lpClassName,
                 string lpWindowName);
