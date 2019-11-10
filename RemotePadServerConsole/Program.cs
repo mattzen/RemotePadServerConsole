@@ -40,43 +40,60 @@ namespace RemotePadServerConsole
 
         static void Main(string[] args)
         {
-            //StartListener();
-            Win32.POINT p = new Win32.POINT();
 
+            //Right Click
+            //var l  = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.RightDown);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.RightUp);
 
-            Win32.POINT l;
-            Win32.GetCursorPos(out l);
+            //Scroll up
+            //var l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.LeftDown);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.LeftUp);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.Wheel);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
 
-            Win32.SetCursorPos(l.x + 200, l.y +200);
-
+            //Start new process
             //Process pr = new Process();
-            //pr.StartInfo.FileName = "visual studiocmd";
-
-            //pr.StartInfo.UseShellExecute = false;7
-            //pr.StartInfo.CreateNoWindow = false;
-
+            //pr.StartInfo.FileName = "notepad.exe";
             //pr.Start();
-
-            Keyboard k = new Keyboard();
-
-
-            k.Send(Keyboard.ScanCodeShort.KEY_7);
-
             
+            //Keyboard a and capital A
+            //var l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.LeftDown);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEvent(Win32.MouseEventFlags.LeftUp);
+            //Keyboard k = new Keyboard();
+            //k.Send(Keyboard.ScanCodeShort.KEY_A);
+            //k.SendWithShift(Keyboard.ScanCodeShort.KEY_A);
+
 
             Console.WriteLine("Hello World!");
 
 
-
+            
 
         }
 
 
-        public class Win32
+        public static class Win32
         {
+            [DllImport("User32.dll")]
+            public static extern IntPtr PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        
-
+            [DllImport("user32.dll")]
+            private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
 
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
             public static extern IntPtr FindWindow(string lpClassName,
@@ -90,15 +107,66 @@ namespace RemotePadServerConsole
             [DllImport("User32.Dll")]
             public static extern long SetCursorPos(int x, int y);
 
+            //[DllImport("user32.dll")]
+            //public static extern bool GetCursorPos(out POINT lpPoint);
+
             [DllImport("user32.dll")]
-            public static extern bool GetCursorPos(out POINT lpPoint); 
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static extern bool GetCursorPos(out MousePoint lpMousePoint);
+
+            public static MousePoint GetCursorPosition()
+            {
+                MousePoint currentMousePoint;
+                var gotPoint = GetCursorPos(out currentMousePoint);
+                if (!gotPoint) { currentMousePoint = new MousePoint(0, 0); }
+                return currentMousePoint;
+            }
+
+            public static void MouseEvent(MouseEventFlags value)
+            {
+                MousePoint position = GetCursorPosition();
+
+                mouse_event
+                    ((int)value,
+                        position.X,
+                        position.Y,
+                        1000,
+                        0);
+            }
 
             [StructLayout(LayoutKind.Sequential)]
-            public struct POINT
+            public struct MousePoint
             {
-                public int x;
-                public int y;
+                public int X;
+                public int Y;
+
+                public MousePoint(int x, int y)
+                {
+                    X = x;
+                    Y = y;
+                }
             }
+
+            [Flags]
+            public enum MouseEventFlags
+            {
+                LeftDown = 0x00000002,
+                LeftUp = 0x00000004,
+                MiddleDown = 0x00000020,
+                MiddleUp = 0x00000040,
+                Move = 0x00000001,
+                Absolute = 0x00008000,
+                RightDown = 0x00000008,
+                RightUp = 0x00000010,
+                Wheel = 0x0800
+            }
+
+            //[StructLayout(LayoutKind.Sequential)]
+            //public struct POINT
+            //{
+            //    public int x;
+            //    public int y;
+            //}
         }
 
 

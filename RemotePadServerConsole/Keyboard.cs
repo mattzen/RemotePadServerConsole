@@ -7,6 +7,34 @@ namespace RemotePadServerConsole
 {
     public class Keyboard
     {
+        public void SendWithShift(ScanCodeShort a)
+        {
+            HoldLShift();
+            Send(a);
+            ReleaseLShift();
+        }
+        public void HoldLShift()
+        {
+            var Inputs = new INPUT[1];
+            var Input = new INPUT();
+            Input.type = 1;
+            Input.U.ki.wScan = ScanCodeShort.LSHIFT;
+            Input.U.ki.dwFlags = KEYEVENTF.SCANCODE;
+            Inputs[0] = Input;
+            SendInput(1, Inputs, INPUT.Size);
+        }
+        public void ReleaseLShift()
+        {
+            var Inputs = new INPUT[1];
+            var Input = new INPUT();
+            Input.type = 1;
+            Input.U.ki.wScan = ScanCodeShort.LSHIFT;
+            Input.U.ki.dwFlags = KEYEVENTF.KEYUP | KEYEVENTF.SCANCODE;
+            Inputs[0] = Input;
+            SendInput(1, Inputs, INPUT.Size);
+        }
+
+
         public void Send(ScanCodeShort a)
         {
             INPUT[] Inputs = new INPUT[1];
