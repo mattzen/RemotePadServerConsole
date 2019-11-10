@@ -49,24 +49,37 @@ namespace RemotePadServerConsole
             //Win32.SetCursorPos(l.X, l.Y);
             //Win32.MouseEvent(Win32.MouseEventFlags.RightUp);
 
+            //backbutton
+            //var l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X + 2000, l.Y + 300);
+            //Win32.MouseEventClick(Win32.MouseEventFlags.LeftDown);
+            //l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEventClick(Win32.MouseEventFlags.LeftUp);
+            ////l = Win32.GetCursorPosition();
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEventXButton(Win32.MouseEventFlags.XDOWN, (int)Win32.MouseEventDataXButtons.XBUTTON1);
+            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEventXButton(Win32.MouseEventFlags.XUP, (int)Win32.MouseEventDataXButtons.XBUTTON1);
+
+
             //Scroll up
             //var l = Win32.GetCursorPosition();
             //Win32.SetCursorPos(l.X, l.Y);
-            //Win32.MouseEvent(Win32.MouseEventFlags.LeftDown);
+            //Win32.MouseEventClick(Win32.MouseEventFlags.LeftDown);
             //l = Win32.GetCursorPosition();
             //Win32.SetCursorPos(l.X, l.Y);
-            //Win32.MouseEvent(Win32.MouseEventFlags.LeftUp);
+            //Win32.MouseEventClick(Win32.MouseEventFlags.LeftUp);
             //l = Win32.GetCursorPosition();
             //Win32.SetCursorPos(l.X, l.Y);
-            //Win32.MouseEvent(Win32.MouseEventFlags.Wheel);
-            //l = Win32.GetCursorPosition();
-            //Win32.SetCursorPos(l.X, l.Y);
+            //Win32.MouseEventScroll(Win32.MouseEventFlags.Wheel, 1000);
+
 
             //Start new process
             //Process pr = new Process();
             //pr.StartInfo.FileName = "notepad.exe";
             //pr.Start();
-            
+
             //Keyboard a and capital A
             //var l = Win32.GetCursorPosition();
             //Win32.SetCursorPos(l.X, l.Y);
@@ -122,16 +135,51 @@ namespace RemotePadServerConsole
                 return currentMousePoint;
             }
 
-            public static void MouseEvent(MouseEventFlags value)
+
+            public static void MouseEventClick(MouseEventFlags value)
             {
                 MousePoint position = GetCursorPosition();
 
+
                 mouse_event
-                    ((int)value,
-                        position.X,
-                        position.Y,
-                        1000,
-                        0);
+                ((int)value,
+                    position.X,
+                    position.Y,
+                    0,
+                    0);
+
+
+            }
+
+
+            public static void MouseEventXButton(MouseEventFlags value, int xbutton)
+            {
+                MousePoint position = GetCursorPosition();
+               
+                  
+                        mouse_event
+                        ((int)value,
+                            position.X,
+                            position.Y,
+                            xbutton,
+                            0);
+    
+         
+            }
+
+            public static void MouseEventScroll(MouseEventFlags value, int scroll)
+            {
+                MousePoint position = GetCursorPosition();
+
+
+                mouse_event
+                ((int)value,
+                    position.X,
+                    position.Y,
+                    scroll,
+                    0);
+
+
             }
 
             [StructLayout(LayoutKind.Sequential)]
@@ -158,9 +206,20 @@ namespace RemotePadServerConsole
                 Absolute = 0x00008000,
                 RightDown = 0x00000008,
                 RightUp = 0x00000010,
-                Wheel = 0x0800
+                Wheel = 0x0800,
+                XDOWN = 0x00000080,
+                XUP = 0x00000100
             }
 
+            [Flags]
+            public enum MouseEventDataXButtons : uint
+            {
+                Nothing = 0x00000000,
+                //backbutton
+                XBUTTON1 = 0x00000001,
+                //forwardbutton
+                XBUTTON2 = 0x00000002
+            }
             //[StructLayout(LayoutKind.Sequential)]
             //public struct POINT
             //{
